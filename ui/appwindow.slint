@@ -1,25 +1,41 @@
-import { Button, VerticalBox, HorizontalBox, GroupBox } from "std-widgets.slint";
+import { Button, VerticalBox, HorizontalBox, GroupBox, GridBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
     GridLayout {
         Row{ // 
             HorizontalBox {
+                max-height: 30px;
                 Button { text: "Button 1"; }
                 Button { text: "Button 2"; }
                 Button { text: "Button 3"; }
             }
         }
         Row{ // 
-            VerticalBox {
+            HorizontalLayout {
                 GroupBox { // Display Board that are online
-
-                  }
-                GroupBox { //text input to send comands to apropiate boards
-                    
+                    VerticalLayout {
+                        HorizontalLayout {
+                            max-height: 20px;
+                            Button { text: "Online"; }
+                            Button { text: "Offline"; }
+                        }
+                        VerticalLayout {
+                            VerticalBox {// Board 1
+                                min-width: 400px;
+                                            Button { text: "Board 1"; }
+                                            Button { text: "Board 2"; }
+                                            Button { text: "Board 3"; }
+                                        }
+                                    }
+                                }
+                }
+            GroupBox { //text input to send comands to apropiate boards 
+                min-width: 400px;
+                padding: 0px; 
                     GridLayout {
                         VerticalLayout{
                             Text { text: "Send Command to Board";}
-                            TextInput {property <brush> c1:#ffffff;}
+                            TextInput {property <brush> c1:#ffffff; min-height: 30px;}
                         HorizontalLayout{ //
                             spacing: 10px;
                             Button { text: "clear"; max-height: 15px; max-width: 20px;}
@@ -27,9 +43,6 @@ export component AppWindow inherits Window {
                             }
                         }
                     }
-                }
-                Button { 
-                    text: "Button 6";
                 }
             }
         }
