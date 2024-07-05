@@ -1,25 +1,37 @@
-import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { Button, VerticalBox, HorizontalBox, GroupBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
-    in-out property<int> counter: 42;
-    callback request-increase-value();
-    VerticalBox {
-        Text {
-            text: "Counter: \{root.counter}";
-        }
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
+    GridLayout {
+        Row{ // 
+            HorizontalBox {
+                Button { text: "Button 1"; }
+                Button { text: "Button 2"; }
+                Button { text: "Button 3"; }
             }
         }
-    }
-    HorizontalBox {
-        Button {
-            text: "Button 1";
-        }
-        Button {
-            text: "Button 2";
+        Row{ // 
+            VerticalBox {
+                GroupBox { // Display Board that are online
+
+                  }
+                GroupBox { //text input to send comands to apropiate boards
+                    
+                    GridLayout {
+                        VerticalLayout{
+                            Text { text: "Send Command to Board";}
+                            TextInput {property <brush> c1:#ffffff;}
+                        HorizontalLayout{ //
+                            spacing: 10px;
+                            Button { text: "clear"; max-height: 15px; max-width: 20px;}
+                            Button { text: "Send Command";  width: 165px ;}
+                            }
+                        }
+                    }
+                }
+                Button { 
+                    text: "Button 6";
+                }
+            }
         }
     }
 }
