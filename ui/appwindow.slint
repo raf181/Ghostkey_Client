@@ -2,6 +2,7 @@ import { Button, VerticalBox, HorizontalBox, GroupBox, GridBox } from "std-widge
 
 export component AppWindow inherits Window {
     GridLayout {
+        padding: 5px;
         Row{ // 
             HorizontalBox {
                 max-height: 30px;
@@ -12,35 +13,31 @@ export component AppWindow inherits Window {
         }
         Row{ // 
             HorizontalLayout {
-                GroupBox { // Display Board that are online
+                spacing: 10px;
                     VerticalLayout {
+                        padding-top: 0px;
+                        padding-bottom: 40px;
+                        padding-left: 10px;
                         HorizontalLayout {
                             max-height: 20px;
                             Button { text: "Online"; }
                             Button { text: "Offline"; }
                         }
                         VerticalLayout {
-                            VerticalBox {// Board 1
+                            VerticalBox {
                                 min-width: 400px;
-                                            Button { text: "Board 1"; }
-                                            Button { text: "Board 2"; }
-                                            Button { text: "Board 3"; }
-                                        }
-                                    }
-                                }
-                }
-            GroupBox { //text input to send comands to apropiate boards 
-                min-width: 400px;
-                padding: 0px; 
+                                // Here there should be a list of boards that are currently clasified as online by the server
+
+                            }
+                        }
+                    }
                     GridLayout {
                         VerticalLayout{
-                            Text { text: "Send Command to Board";}
-                            TextInput {property <brush> c1:#ffffff; min-height: 30px;}
+                            // Here there should a form that gets all the information needed to send a command to a board
                         HorizontalLayout{ //
                             spacing: 10px;
                             Button { text: "clear"; max-height: 15px; max-width: 20px;}
                             Button { text: "Send Command";  width: 165px ;}
-                            }
                         }
                     }
                 }
