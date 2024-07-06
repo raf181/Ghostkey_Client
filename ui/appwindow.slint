@@ -32,8 +32,18 @@ export component AppWindow inherits Window {
                         }
                     }
                     GridLayout {
-                        VerticalLayout{
-                            // Here there should a form that gets all the information needed to send a command to a board
+                        VerticalLayout {
+                        HorizontalLayout{
+                            padding: 5px;
+                            VerticalLayout {
+                                Text { text: "Board"; }
+                                Text { text: "Command"; }
+                            }
+                            VerticalLayout {
+                                TextInput { width: 100px; }
+                                TextInput { width: 100px; }
+                            }
+                        }
                         HorizontalLayout{ //
                             spacing: 10px;
                             Button { text: "clear"; max-height: 15px; max-width: 20px;}
