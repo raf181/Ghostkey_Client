@@ -2,7 +2,7 @@ use clap::{Command, Arg};
 
 pub fn build_cli() -> Command {
     Command::new("command_sender")
-        .version("1.0")
+        .version("0.1.0")
         .author("Your Name <youremail@example.com>")
         .about("Sends commands to ESP32 devices")
         .subcommand(
@@ -23,5 +23,14 @@ pub fn build_cli() -> Command {
                 .about("Sends a command to a device")
                 .arg(Arg::new("esp_id").required(true).help("ESP ID"))
                 .arg(Arg::new("command").required(true).help("Command text")),
+        )
+        .subcommand(
+            Command::new("active_boards")
+                .about("Gets a list of active boards"),
+        )
+        .subcommand(
+            Command::new("get_all_commands")
+                .about("Gets all commands for a device")
+                .arg(Arg::new("esp_id").required(true).help("ESP ID")),
         )
 }

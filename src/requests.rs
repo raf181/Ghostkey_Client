@@ -65,3 +65,12 @@ pub async fn active_boards(client: &Client, base_url: &str) -> Result<(), Box<dy
     println!("Response: {:?}", resp.text().await?);
     Ok(())
 }
+
+pub async fn get_all_commands(client: &Client, base_url: &str, esp_id: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{}/get_all_commands", base_url);
+    let params = [("esp_id", esp_id)];
+    
+    let resp = client.get(&url).query(&params).send().await?;
+    println!("Response: {:?}", resp.text().await?);
+    Ok(())
+}
