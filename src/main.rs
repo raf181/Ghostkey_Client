@@ -25,7 +25,17 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("Unmatched subcommand: {}", name);
         }
         None => {
-            println!("No subcommand matched.");
+            println!("░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░ ░▒▓███████▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ ");
+            println!("░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ "); 
+            println!("░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ");
+            println!("░▒▓█▓▒▒▓███▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░   ░▒▓█▓▒░   ░▒▓███████▓▒░░▒▓██████▓▒░  ░▒▓██████▓▒░  ");
+            println!("░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░     ");
+            println!("░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░     ");
+            println!(" ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓███████▓▒░   ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░  ░▒▓█▓▒░     ");
+            println!("==========================================================================================================");
+            println!("\x1b[93m Using version: 0.1.0 \x1b[0m");
+            println!(" ");
+            println!("Please use a subcommand. Run with --help for more information.");
         }
     }
 
@@ -38,7 +48,7 @@ fn register_user(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let password = matches.get_one::<String>("password").unwrap();
 
     let client = Client::new();
-    let res = client.post("http://192.168.1.62:5000/register_user")
+    let res = client.post("http://192.168.10.62:5000/register_user")
         .form(&[("secret_key", secret_key), ("username", username), ("password", password)])
         .send()?;
 
@@ -51,7 +61,7 @@ fn login(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let password = matches.get_one::<String>("password").unwrap();
 
     let client = Client::new();
-    let res = client.post("http://192.168.1.62:5000/login")
+    let res = client.post("http://192.168.10.62:5000/login")
         .form(&[("username", username), ("password", password)])
         .send()?;
 
@@ -64,7 +74,7 @@ fn send_command(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let command = matches.get_one::<String>("command").unwrap();
 
     let client = Client::new();
-    let res = client.post("http://192.168.1.62:5000/command")
+    let res = client.post("http://192.168.10.62:5000/command")
         .form(&[("esp_id", esp_id), ("command", command)])
         .send()?;
 

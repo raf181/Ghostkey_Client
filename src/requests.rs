@@ -57,3 +57,11 @@ pub async fn send_command(client: &Client, base_url: &str, esp_id: &str, command
     println!("Response: {:?}", resp.text().await?);
     Ok(())
 }
+
+pub async fn active_boards(client: &Client, base_url: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{}/active_boards", base_url);
+    
+    let resp = client.get(&url).send().await?;
+    println!("Response: {:?}", resp.text().await?);
+    Ok(())
+}
