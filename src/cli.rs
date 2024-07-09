@@ -34,4 +34,10 @@ pub fn build_cli() -> Command {
                 .about("Gets all commands for a device")
                 .arg(Arg::new("esp_id").required(true).help("ESP ID")),
         )
+        .subcommand(
+            Command::new("register_device")
+                .about("Registers a new ESP32 device")
+                .arg(Arg::new("esp_id").required(true).help("ESP ID"))
+                .arg(Arg::new("secret_key").required(true).help("Secret key")),
+        )
 }

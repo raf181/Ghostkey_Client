@@ -99,4 +99,15 @@ pub async fn get_all_commands(client: &Client, base_url: &str, esp_id: &str) -> 
 }
 
 // [Test, Not redy for release]
-// [Test 1 ]: pub async fn register_esp
+pub async fn register_device(client: &Client, base_url: &str, esp_id: &str, secret_key: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{}//register_device", base_url);
+    let params = RegisterEsp {
+        esp_id: esp_id.to_string(),
+        secret_key: secret_key.to_string(),
+    };
+
+    let resp = client.post(&url).json(&params).send().await?;
+    println!("Response: {:?}", resp.text().await?);
+    Ok(())
+}
+

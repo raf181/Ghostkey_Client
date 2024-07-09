@@ -29,6 +29,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("Getting all commands...");
             get_all_commands(sub_m)?
         }
+        Some(("register_device", sub_m)) => {
+            println!("Registering device...");
+            register_device(sub_m)?
+        }
         Some((name, _)) => {
             println!("Unmatched subcommand: {}", name);
         }
@@ -107,6 +111,20 @@ fn get_all_commands(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         .query(&[("esp_id", esp_id)])
         .send()?;
     
+    println!("{:#?}", res.text()?);
+
+    Ok(())
+}
+
+fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+    let esp_id = matches.get_one::<String>("esp_id").unwrap();
+    let secret_key = matches.get_one::<String>("secret_key").unwrap();
+
+    let client = Client::new();
+    let res = client.post(format!("{}/register_device", SERVER_ADDRESS))
+        .form(&[("esp_id", esp_id), ("secret_key", secret_key)])
+        .send()?;
+
     println!("{:#?}", res.text()?);
 
     Ok(())
