@@ -5,6 +5,7 @@ use std::error::Error;
 
 mod cli;
 use cli::build_cli;
+
 const SERVER_ADDRESS: &str = "http://192.168.10.62:5000";
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = build_cli().get_matches();
@@ -29,10 +30,21 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("Getting all commands...");
             get_all_commands(sub_m)?
         }
+        // [Test, Not redy for release]
         Some(("register_device", sub_m)) => {
             println!("Registering device...");
             register_device(sub_m)?
         }
+        // [Test, Not redy for release] Not implemented in the server
+        Some(("delete_device", sub_m)) => {
+            println!("Deleting device...");
+            delete_device(sub_m)?
+        }
+        // [Test, Not redy for release] Not implemented in the server
+        Some(("export_database", _)) => {
+            println!("Exporting database...");
+            // export_database()?
+        }       
         Some((name, _)) => {
             println!("Unmatched subcommand: {}", name);
         }
@@ -116,6 +128,7 @@ fn get_all_commands(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// [Test, Not redy for release]
 fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").unwrap();
     let secret_key = matches.get_one::<String>("secret_key").unwrap();
@@ -127,5 +140,28 @@ fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 
     println!("{:#?}", res.text()?);
 
+    Ok(())
+}
+
+fn delete_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+    let esp_id = matches.get_one::<String>("esp_id").unwrap();
+
+    let client = Client::new();
+    let res = client.post(format!("{}/delete_device", SERVER_ADDRESS))
+        .form(&[("esp_id", esp_id)])
+        .send()?;
+
+    println!("{:#?}", res.text()?);
+
+    Ok(())
+}
+
+// [Test, Not redy for release]
+fn export_database() -> Result<(), Box<dyn Error>> {
+    let client = Client::new();
+    let res = client.get(format!("{}/export_database", SERVER_ADDRESS))
+        .send()?;
+
+    println!("{:#?}", res.text()?);
     Ok(())
 }

@@ -40,4 +40,14 @@ pub fn build_cli() -> Command {
                 .arg(Arg::new("esp_id").required(true).help("ESP ID"))
                 .arg(Arg::new("secret_key").required(true).help("Secret key")),
         )
+        .subcommand( // [Test, Not redy for release] Not implemented in the server
+            Command::new("delete_device")
+                .about("Deletes an ESP32 device")
+                .arg(Arg::new("esp_id").required(true).help("ESP ID")),
+        )
+        .subcommand( // [Test, Not redy for release] Not implemented in the server
+            Command::new("export_database")
+                .about("Exports the database to a file")
+                .arg(Arg::new("file").required(true).help("File to export to")),
+        )
 }

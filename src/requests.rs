@@ -110,4 +110,23 @@ pub async fn register_device(client: &Client, base_url: &str, esp_id: &str, secr
     println!("Response: {:?}", resp.text().await?);
     Ok(())
 }
+// [Test, Not redy for release] Not implemented in the server
+pub async fn delete_device(client: &Client, base_url: &str, esp_id: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{}/delete_device", base_url);
+    let params = [("esp_id", esp_id)];
+    
+    let resp = client.delete(&url).query(&params).send().await?;
+    println!("Response: {:?}", resp.text().await?);
+    Ok(())
+}
 
+// [Test, Not redy for release] Not implemented in the server
+pub async fn export_database(client: &Client, base_url: &str) -> Result<(), Box<dyn Error>> {
+    let url = format!("{}/export_database", base_url);
+
+    let resp = client.get(&url).send().await?;
+    let text = resp.text().await?;
+    let json: Value = serde_json::from_str(&text)?;
+    println!("Response: {}", serde_json::to_string_pretty(&json)?);
+    Ok(())
+}
