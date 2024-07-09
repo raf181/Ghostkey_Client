@@ -1,6 +1,8 @@
+// request.rs - Module for handling requests to the server
 use reqwest::Client;
 use serde::Serialize;
 use std::error::Error;
+use serde_json::Value;
 
 #[derive(Serialize)]
 struct RegisterUser {
@@ -19,6 +21,17 @@ struct Login {
 struct SendCommand {
     esp_id: String,
     command: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct ActiveBoard {
+    esp_id: String,
+    last_request_duration: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct ActiveBoardsResponse {
+    active_boards: Vec<ActiveBoard>,
 }
 
 pub async fn register_user(client: &Client, base_url: &str, secret_key: &str, username: &str, password: &str) -> Result<(), Box<dyn Error>> {
@@ -60,9 +73,17 @@ pub async fn send_command(client: &Client, base_url: &str, esp_id: &str, command
 
 pub async fn active_boards(client: &Client, base_url: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{}/active_boards", base_url);
-    
+
     let resp = client.get(&url).send().await?;
-    println!("Response: {:?}", resp.text().await?);
+    let text = resp.text().await?;
+    let active_boards_response: ActiveBoardsResponse = serde_json::from_str(&text)?;
+
+    for board in active_boards_response.active_boards {
+        println!("ESP ID: {}", board.esp_id);
+        println!("Last Request Duration: {}", board.last_request_duration);
+        println!("------------------------");
+    }
+
     Ok(())
 }
 
@@ -71,6 +92,11 @@ pub async fn get_all_commands(client: &Client, base_url: &str, esp_id: &str) -> 
     let params = [("esp_id", esp_id)];
     
     let resp = client.get(&url).query(&params).send().await?;
-    println!("Response: {:?}", resp.text().await?);
+    let text = resp.text().await?;
+    let json: Value = serde_json::from_str(&text)?;
+    println!("Response: {}", serde_json::to_string_pretty(&json)?);
     Ok(())
 }
+
+// [Test, Not redy for release]
+// [Test 1 ]: pub async fn register_esp

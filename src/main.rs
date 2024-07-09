@@ -1,3 +1,4 @@
+// main.rs
 use clap::ArgMatches;
 use reqwest::blocking::Client;
 use std::error::Error;

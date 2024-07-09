@@ -1,9 +1,10 @@
+//cli.rc 
 use clap::{Command, Arg};
 
 pub fn build_cli() -> Command {
     Command::new("command_sender")
         .version("0.1.0")
-        .author("Your Name <youremail@example.com>")
+        .author("raf181_")
         .about("Sends commands to ESP32 devices")
         .subcommand(
             Command::new("register_user")
