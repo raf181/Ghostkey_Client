@@ -34,6 +34,18 @@ struct ActiveBoardsResponse {
     active_boards: Vec<ActiveBoard>,
 }
 
+#[derive(Deserialize)]
+struct RegisterDevice {
+    esp_id: String,
+    secret_key: String,
+}
+
+#[derive(Deserialize)]
+struct RemoveDevice {
+    esp_id: String,
+    secret_key: String,
+}
+
 pub async fn register_user(client: &Client, base_url: &str, secret_key: &str, username: &str, password: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{}/register_user", base_url);
     let user = RegisterUser {
@@ -101,7 +113,7 @@ pub async fn get_all_commands(client: &Client, base_url: &str, esp_id: &str) -> 
 // [Test, Not redy for release]
 pub async fn register_device(client: &Client, base_url: &str, esp_id: &str, secret_key: &str) -> Result<(), Box<dyn Error>> {
     let url = format!("{}//register_device", base_url);
-    let params = RegisterEsp {
+    let params = RegisterDevice {
         esp_id: esp_id.to_string(),
         secret_key: secret_key.to_string(),
     };
@@ -110,23 +122,28 @@ pub async fn register_device(client: &Client, base_url: &str, esp_id: &str, secr
     println!("Response: {:?}", resp.text().await?);
     Ok(())
 }
-// [Test, Not redy for release] Not implemented in the server
+// [Test, Not redy for release]
 pub async fn delete_device(client: &Client, base_url: &str, esp_id: &str) -> Result<(), Box<dyn Error>> {
-    let url = format!("{}/delete_device", base_url);
-    let params = [("esp_id", esp_id)];
+    let url = format!("{}/remove_device", base_url);
+    let params = RemoveDevice {
+        esp_id: esp_id.to_string(),
+        secret_key: secret_key.to_string(),
+    };
     
     let resp = client.delete(&url).query(&params).send().await?;
     println!("Response: {:?}", resp.text().await?);
     Ok(())
 }
 
-// [Test, Not redy for release] Not implemented in the server
-pub async fn export_database(client: &Client, base_url: &str) -> Result<(), Box<dyn Error>> {
-    let url = format!("{}/export_database", base_url);
 
-    let resp = client.get(&url).send().await?;
-    let text = resp.text().await?;
-    let json: Value = serde_json::from_str(&text)?;
-    println!("Response: {}", serde_json::to_string_pretty(&json)?);
-    Ok(())
-}
+// [Test, Not redy for release] Not implemented in the server
+// [export]pub async fn export_database(client: &Client, base_url: &str) -> Result<(), Box<dyn Error>> {
+// [export]    let url = format!("{}/export_database", base_url);
+// [export]
+// [export]    let resp = client.get(&url).send().await?;
+// [export]    let text = resp.text().await?;
+// [export]    let json: Value = serde_json::from_str(&text)?;
+// [export]    println!("Response: {}", serde_json::to_string_pretty(&json)?);
+// [export]    Ok(())
+// [export]}
+

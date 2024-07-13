@@ -88,6 +88,11 @@ pub fn build_cli() -> Command {
                 .arg(Arg::new("esp_id")
                     .required(true)
                     .help("ESP ID"))
+
+                // [arg] secret_key
+                .arg(Arg::new("secret_key")
+                    .required(true)
+                    .help("Secret key")),
         )
 // [export]        .subcommand( // [Test, Not redy for release] Not implemented in the server
 // [export]            Command::new("export_database")

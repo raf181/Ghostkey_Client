@@ -85,7 +85,7 @@ fn login(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let password = matches.get_one::<String>("password").unwrap();
 
     let client = Client::new();
-    let res = client.post("{}/login, ")
+    let res = client.post(format!("{}/login", SERVER_ADDRESS))
         .form(&[("username", username), ("password", password)])
         .send()?;
 
@@ -129,7 +129,6 @@ fn get_all_commands(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 }
 
 // [Test, Not redy for release]
-
 fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").expect("ESP ID is required");
     let secret_key = matches.get_one::<String>("secret_key").expect("Secret key is required");
@@ -145,10 +144,11 @@ fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 
 fn delete_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").unwrap();
+    let secret_key = matches.get_one::<String>("secret_key").expect("Secret key is required");
 
     let client = Client::new();
-    let res = client.post(format!("{}/delete_device", SERVER_ADDRESS))
-        .form(&[("esp_id", esp_id)])
+    let res = client.post(format!("{}/remove_device", SERVER_ADDRESS))
+        .form(&[("esp_id", esp_id), ("secret_key", secret_key)])
         .send()?;
 
     println!("{:#?}", res.text()?);
