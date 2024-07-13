@@ -67,6 +67,15 @@ pub fn build_cli() -> Command {
                     .help("ESP ID")),
         )
         .subcommand(
+            Command::new("get_loaded_commands")
+                .about("Gets loaded commands for a device")
+
+                // [arg] esp_id
+                .arg(Arg::new("esp_id")
+                    .required(true)
+                    .help("ESP ID")),
+        )
+        .subcommand(
             Command::new("register_device")
                 .about("Registers a new ESP32 device")
 
@@ -81,7 +90,7 @@ pub fn build_cli() -> Command {
                     .help("Secret key")),
         )
         .subcommand( // [Test, Not redy for release] Not implemented in the server
-            Command::new("delete_device")
+            Command::new("remove_device")
                 .about("Deletes an ESP32 device")
 
                 // [arg] esp_id

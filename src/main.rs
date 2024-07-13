@@ -1,50 +1,60 @@
-// main.rs
 use clap::ArgMatches;
-use reqwest::blocking::Client;
+use reqwest::Client;
 use std::error::Error;
+use tokio::runtime::Runtime;
 
 mod cli;
+mod request;
 use cli::build_cli;
+use request::*;
 
 const SERVER_ADDRESS: &str = "http://192.168.10.62:5000";
+
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = build_cli().get_matches();
+    let client = Client::new();
+    let rt = Runtime::new()?;
+
     match matches.subcommand() {
         Some(("register_user", sub_m)) => {
             println!("Registering user...");
-            register_user(sub_m)?
+            rt.block_on(register_user_cmd(sub_m, &client))?
         }
         Some(("login", sub_m)) => {
             println!("Logging in...");
-            login(sub_m)?
+            rt.block_on(login_cmd(sub_m, &client))?
         }
         Some(("send_command", sub_m)) => {
             println!("Sending command...");
-            send_command(sub_m)?
+            rt.block_on(send_command_cmd(sub_m, &client))?
         }
         Some(("active_boards", _)) => {
             println!("Getting active boards...");
-            active_boards()?
+            rt.block_on(active_boards_cmd(&client))?
         }
         Some(("get_all_commands", sub_m)) => {
             println!("Getting all commands...");
-            get_all_commands(sub_m)?
+            rt.block_on(get_all_commands_cmd(sub_m, &client))?
         }
-        // [Test, Not redy for release]
+        Some(("get_loaded_commands", sub_m)) => {
+            println!("Getting loaded commands...");
+            rt.block_on(get_loaded_commands_cmd(sub_m, &client))?
+        }
+        // [Test, Not ready for release]
         Some(("register_device", sub_m)) => {
             println!("Registering device...");
-            register_device(sub_m)?
+            rt.block_on(register_device_cmd(sub_m, &client))?
         }
-        // [Test, Not redy for release] Not implemented in the server
-        Some(("delete_device", sub_m)) => {
+        // [Test, Not ready for release] Not implemented in the server
+        Some(("remove_device", sub_m)) => {
             println!("Deleting device...");
-            delete_device(sub_m)?
+            rt.block_on(remove_device_cmd(sub_m, &client))?
         }
-        // [Test, Not redy for release] Not implemented in the server
+        // [Test, Not ready for release] Not implemented in the server
         Some(("export_database", _)) => {
             println!("Exporting database...");
-            // export_database()?
-        }       
+            // rt.block_on(export_database_cmd(&client))?
+        }
         Some((name, _)) => {
             println!("Unmatched subcommand: {}", name);
         }
@@ -66,102 +76,54 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn register_user(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+async fn register_user_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let secret_key = matches.get_one::<String>("secret_key").unwrap();
     let username = matches.get_one::<String>("username").unwrap();
     let password = matches.get_one::<String>("password").unwrap();
-
-    let client = Client::new();
-    let res = client.post(format!("{}/register_user", SERVER_ADDRESS))
-        .form(&[("secret_key", secret_key), ("username", username), ("password", password)])
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
+    register_user(client, SERVER_ADDRESS, secret_key, username, password).await
 }
 
-fn login(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+async fn login_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let username = matches.get_one::<String>("username").unwrap();
     let password = matches.get_one::<String>("password").unwrap();
-
-    let client = Client::new();
-    let res = client.post(format!("{}/login", SERVER_ADDRESS))
-        .form(&[("username", username), ("password", password)])
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
+    login(client, SERVER_ADDRESS, username, password).await
 }
 
-fn send_command(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+async fn send_command_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").unwrap();
     let command = matches.get_one::<String>("command").unwrap();
-
-    let client = Client::new();
-    let res = client.post(format!("{}/command", SERVER_ADDRESS))
-        .form(&[("esp_id", esp_id), ("command", command)])
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
+    send_command(client, SERVER_ADDRESS, esp_id, command).await
 }
 
-fn active_boards() -> Result<(), Box<dyn Error>> {
-    let client = Client::new();
-    let res = client.get(format!("{}/active_boards", SERVER_ADDRESS))
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
+async fn active_boards_cmd(client: &Client) -> Result<(), Box<dyn Error>> {
+    active_boards(client, SERVER_ADDRESS).await
 }
 
-fn get_all_commands(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+async fn get_loaded_commands_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").unwrap();
-    
-    let client = Client::new();
-    let res = client.get(format!("{}/get_all_commands", SERVER_ADDRESS))
-        .query(&[("esp_id", esp_id)])
-        .send()?;
-    
-    println!("{:#?}", res.text()?);
-
-    Ok(())
+    get_loaded_commands(client, SERVER_ADDRESS, esp_id).await
 }
 
-// [Test, Not redy for release]
-fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+async fn get_all_commands_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
+    let esp_id = matches.get_one::<String>("esp_id").unwrap();
+    get_all_commands(client, SERVER_ADDRESS, esp_id).await
+}
+
+// [Test, Not ready for release]
+async fn register_device_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").expect("ESP ID is required");
     let secret_key = matches.get_one::<String>("secret_key").expect("Secret key is required");
-
-    let client = Client::new();
-    let res = client.post(format!("{}/register_device", SERVER_ADDRESS))
-        .form(&[("esp_id", esp_id), ("secret_key", secret_key)])
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
+    register_device(client, SERVER_ADDRESS, esp_id, secret_key).await
 }
 
-fn delete_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
+// [Test, Not ready for release]
+async fn remove_device_cmd(matches: &ArgMatches, client: &Client) -> Result<(), Box<dyn Error>> {
     let esp_id = matches.get_one::<String>("esp_id").unwrap();
     let secret_key = matches.get_one::<String>("secret_key").expect("Secret key is required");
-
-    let client = Client::new();
-    let res = client.post(format!("{}/remove_device", SERVER_ADDRESS))
-        .form(&[("esp_id", esp_id), ("secret_key", secret_key)])
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-
-    Ok(())
+    remove_device(client, SERVER_ADDRESS, esp_id, secret_key).await
 }
 
-// [Test, Not redy for release]
-// [export]fn export_database() -> Result<(), Box<dyn Error>> {
-// [export]   let client = Client::new();
-// [export]    let res = client.get(format!("{}/export_database", SERVER_ADDRESS))
-// [export]        .send()?;
-// [export]
-// [export]    println!("{:#?}", res.text()?);
-// [export]    Ok(())
-// [export]}
+// [Test, Not ready for release]
+// async fn export_database_cmd(client: &Client) -> Result<(), Box<dyn Error>> {
+//     export_database(client, SERVER_ADDRESS).await
+// }
