@@ -9,21 +9,49 @@ pub fn build_cli() -> Command {
         .subcommand(
             Command::new("register_user")
                 .about("Registers a new user")
-                .arg(Arg::new("secret_key").required(true).help("Secret key"))
-                .arg(Arg::new("username").required(true).help("Username"))
-                .arg(Arg::new("password").required(true).help("Password")),
+
+                // [arg] secret_key
+                .arg(Arg::new("secret_key")
+                    .required(true)
+                    .help("Secret key"))
+
+                // [arg] username
+                .arg(Arg::new("username")
+                    .required(true)
+                    .help("Username"))
+
+                // [arg] password
+                .arg(Arg::new("password")
+                    .required(true)
+                    .help("Password")),
         )
         .subcommand(
             Command::new("login")
                 .about("Logs in a user")
-                .arg(Arg::new("username").required(true).help("Username"))
-                .arg(Arg::new("password").required(true).help("Password")),
+
+                // [arg] username
+                .arg(Arg::new("username")
+                    .required(true)
+                    .help("Username"))
+
+                // [arg] password
+                .arg(Arg::new("password")
+                    .required(true)
+                    .help("Password")),
         )
         .subcommand(
             Command::new("send_command")
                 .about("Sends a command to a device")
-                .arg(Arg::new("esp_id").required(true).help("ESP ID"))
-                .arg(Arg::new("command").required(true).help("Command text")),
+
+                // [arg] esp_id
+                .arg(Arg::new("esp_id")
+                    .required(true)
+                    .help("ESP ID"))
+
+                // [arg] command
+                .arg(Arg::new("command")
+                    .required(true)
+                    .help("Command text")),
         )
         .subcommand(
             Command::new("active_boards")
@@ -32,22 +60,38 @@ pub fn build_cli() -> Command {
         .subcommand(
             Command::new("get_all_commands")
                 .about("Gets all commands for a device")
-                .arg(Arg::new("esp_id").required(true).help("ESP ID")),
+
+                // [arg] esp_id
+                .arg(Arg::new("esp_id")
+                    .required(true)
+                    .help("ESP ID")),
         )
         .subcommand(
             Command::new("register_device")
                 .about("Registers a new ESP32 device")
-                .arg(Arg::new("esp_id").required(true).help("ESP ID"))
-                .arg(Arg::new("secret_key").required(true).help("Secret key")),
+
+                // [arg] esp_id
+                .arg(Arg::new("esp_id")
+                    .required(true)
+                    .help("ESP ID"))
+
+                // [arg] secret_key
+                .arg(Arg::new("secret_key")
+                    .required(true)
+                    .help("Secret key")),
         )
         .subcommand( // [Test, Not redy for release] Not implemented in the server
             Command::new("delete_device")
                 .about("Deletes an ESP32 device")
-                .arg(Arg::new("esp_id").required(true).help("ESP ID")),
+
+                // [arg] esp_id
+                .arg(Arg::new("esp_id")
+                    .required(true)
+                    .help("ESP ID"))
         )
-        .subcommand( // [Test, Not redy for release] Not implemented in the server
-            Command::new("export_database")
-                .about("Exports the database to a file")
-                .arg(Arg::new("file").required(true).help("File to export to")),
-        )
+// [export]        .subcommand( // [Test, Not redy for release] Not implemented in the server
+// [export]            Command::new("export_database")
+// [export]                .about("Exports the database to a file")
+// [export]                .arg(Arg::new("file").required(true).help("File to export to")),
+// [export]        )
 }

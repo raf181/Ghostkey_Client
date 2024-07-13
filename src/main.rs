@@ -129,9 +129,10 @@ fn get_all_commands(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 }
 
 // [Test, Not redy for release]
+
 fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
-    let esp_id = matches.get_one::<String>("esp_id").unwrap();
-    let secret_key = matches.get_one::<String>("secret_key").unwrap();
+    let esp_id = matches.get_one::<String>("esp_id").expect("ESP ID is required");
+    let secret_key = matches.get_one::<String>("secret_key").expect("Secret key is required");
 
     let client = Client::new();
     let res = client.post(format!("{}/register_device", SERVER_ADDRESS))
@@ -139,7 +140,6 @@ fn register_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         .send()?;
 
     println!("{:#?}", res.text()?);
-
     Ok(())
 }
 
@@ -157,11 +157,11 @@ fn delete_device(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 }
 
 // [Test, Not redy for release]
-fn export_database() -> Result<(), Box<dyn Error>> {
-    let client = Client::new();
-    let res = client.get(format!("{}/export_database", SERVER_ADDRESS))
-        .send()?;
-
-    println!("{:#?}", res.text()?);
-    Ok(())
-}
+// [export]fn export_database() -> Result<(), Box<dyn Error>> {
+// [export]   let client = Client::new();
+// [export]    let res = client.get(format!("{}/export_database", SERVER_ADDRESS))
+// [export]        .send()?;
+// [export]
+// [export]    println!("{:#?}", res.text()?);
+// [export]    Ok(())
+// [export]}
